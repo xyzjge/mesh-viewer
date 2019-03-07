@@ -14,6 +14,8 @@ import ar.com.xyz.gameengine.collision.Triangle;
 import ar.com.xyz.gameengine.entity.spec.EntitySpec;
 import ar.com.xyz.gameengine.enumerator.EntityCollisionTypeEnum;
 import ar.com.xyz.gameengine.format.obj.OBJWithMaterialModelData;
+import ar.com.xyz.gameengine.util.FloatUtil;
+import ar.com.xyz.gameengine.util.MeshWithMaterialModelDataUtil;
 
 public class MeshViewerGameState extends AbstractGameState {
 
@@ -143,34 +145,36 @@ public class MeshViewerGameState extends AbstractGameState {
 				triangleAuxList.add(triangle) ;
 			}
 			
-			OBJWithMaterialModelData meshWithMaterialModelData = new OBJWithMaterialModelData() ;
+			OBJWithMaterialModelData meshWithMaterialModelData = MeshWithMaterialModelDataUtil.getInstance().create(triangleAuxList, "green.png") ;
 			
-//			float vertex[] = {0, 0, 0, 1, 0, 0, 0, 0, 1} ;
-//			int index[] = {0, 1, 2} ;
-			
-			
-			float vertex[] = new float[ triangleAuxList.size() * 9 ] ;
-			int index[] = new int[ triangleAuxList.size() * 3] ;
-			
-			int i = 0 ;
-			for(Triangle triangle : triangleAuxList) {
-				vertex[i*9] = triangle.getP1().x ;
-				vertex[i*9+1] = triangle.getP1().y ;
-				vertex[i*9+2] = triangle.getP1().z ;
-				vertex[i*9+3] = triangle.getP2().x ;
-				vertex[i*9+4] = triangle.getP2().y ;
-				vertex[i*9+5] = triangle.getP2().z ;
-				vertex[i*9+6] = triangle.getP3().x ;
-				vertex[i*9+7] = triangle.getP3().y ;
-				vertex[i*9+8] = triangle.getP3().z ;
-				index[i*3] = i*3 ;
-				index[i*3+1] = i*3+1 ;
-				index[i*3+2] = i*3+2 ;
-				i++ ;
-			}
-
-			meshWithMaterialModelData.add("green.png", vertex /* vertexArray*/, null /* vertexTextureCoordinateArray */, null /* vertexNormalArray */, null /* tangentsArray */, index /* indexArray */);
-			meshWithMaterialModelData.setModelData(vertex /* vertexArray */, null /* vertexTextureCoordinateArray */, null /* vertexNormalArray */, null /* tangentsArray */, index /* indicesArray */);
+//			OBJWithMaterialModelData meshWithMaterialModelData = new OBJWithMaterialModelData() ;
+//			
+////			float vertex[] = {0, 0, 0, 1, 0, 0, 0, 0, 1} ;
+////			int index[] = {0, 1, 2} ;
+//			
+//			
+//			float vertex[] = new float[ triangleAuxList.size() * 9 ] ;
+//			int index[] = new int[ triangleAuxList.size() * 3] ;
+//			
+//			int i = 0 ;
+//			for(Triangle triangle : triangleAuxList) {
+//				vertex[i*9] = triangle.getP1().x ;
+//				vertex[i*9+1] = triangle.getP1().y ;
+//				vertex[i*9+2] = triangle.getP1().z ;
+//				vertex[i*9+3] = triangle.getP2().x ;
+//				vertex[i*9+4] = triangle.getP2().y ;
+//				vertex[i*9+5] = triangle.getP2().z ;
+//				vertex[i*9+6] = triangle.getP3().x ;
+//				vertex[i*9+7] = triangle.getP3().y ;
+//				vertex[i*9+8] = triangle.getP3().z ;
+//				index[i*3] = i*3 ;
+//				index[i*3+1] = i*3+1 ;
+//				index[i*3+2] = i*3+2 ;
+//				i++ ;
+//			}
+//
+//			meshWithMaterialModelData.add("green.png", vertex /* vertexArray*/, null /* vertexTextureCoordinateArray */, null /* vertexNormalArray */, null /* tangentsArray */, index /* indexArray */);
+//			meshWithMaterialModelData.setModelData(vertex /* vertexArray */, null /* vertexTextureCoordinateArray */, null /* vertexNormalArray */, null /* tangentsArray */, index /* indicesArray */);
 			entitySpec.setMeshWithMaterialModelData( meshWithMaterialModelData ) ;
 			createEntity(entitySpec);
 		}
@@ -279,47 +283,15 @@ public class MeshViewerGameState extends AbstractGameState {
 	}
 	
 	private boolean descartar(Triangle triangle, float min, float max) {
-		if (min(triangle.getP1().y, triangle.getP2().y, triangle.getP3().y) > max) {
+		if (FloatUtil.getInstance().min(triangle.getP1().y, triangle.getP2().y, triangle.getP3().y) > max) {
 			System.out.println("Descartando triangulo por estar arriba");
 			return true ;
 		}
-		if (max(triangle.getP1().y, triangle.getP2().y, triangle.getP3().y) < min) {
+		if (FloatUtil.getInstance().max(triangle.getP1().y, triangle.getP2().y, triangle.getP3().y) < min) {
 			System.out.println("Descartando triangulo por estar debajo");
 			return true ;
 		}
 		return false;
-	}
-
-	private float min(float a, float b, float c) {
-		if (a < b) {
-			if (a < c) {
-				return a ;
-			} else {
-				return c ;
-			}
-		} else {
-			if (b < c) {
-				return b ;
-			} else {
-				return c ;
-			}
-		}
-	}
-
-	private float max(float a, float b, float c) {
-		if (a > b) {
-			if (a > c) {
-				return a ;
-			} else {
-				return c ;
-			}
-		} else {
-			if (b > c) {
-				return b ;
-			} else {
-				return c ;
-			}
-		}
 	}
 
 }
